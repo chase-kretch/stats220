@@ -1,0 +1,39 @@
+---
+title: "Creating images with R"
+subtitle: "with a little bit of magick"
+author: "Chase Kretschmar"
+date: "2023-03-10"
+output: html_document
+---
+```{css}
+body {
+  font-family: "Lucida Console", "Courier New", monospace;
+  background-color: #F25278
+}
+h2 {
+  font-weight: bold;
+  text-decoration: underline;
+}
+.title {
+  text-decoration: underline;
+  font-weight: bold;
+}
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, echo = TRUE)
+```
+## My Meme
+My meme I created is a common saying from most of my friends and I thought it would be cool to put it into meme format
+![My meme](cat_meme.png)
+```{r file='meme.R', eval=FALSE}
+
+```
+
+## My Animated GIF
+The animated GIF I created was my attempt of creating a new animated meme thats relatable to students (or even lecturers) and also relatable to our cat theme in class :)
+
+![My animated GIF](my_gif.gif)
+```{r file='animation.R', eval=FALSE}
+
+```
+

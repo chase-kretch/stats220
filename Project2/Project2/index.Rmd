@@ -1,0 +1,106 @@
+---
+title: "Project 2"
+subtitle: "STATS 220 Semester One 2023"
+author: "Chase Kretschmar"
+date: "2023-03-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+learning_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vR204WVLpFy7g8NMr3gTlZHcFvIjkBqrC_X3eQd6i3zdvJUh7K74wKAM2Gne6SRl1kJHApphM5D7UaL/pub?gid=1703945528&single=true&output=csv") %>%
+  rename(status = 2, 
+         ideal_spaces = 3,
+         enjoy_code = 4,
+         weekly_code = 5,
+         personal_code = 6,
+         experience = 7,
+         study_time = 8)
+```
+```{css, echo=FALSE}
+body{
+  font-family: "Lucida Console", "Courier New", monospace;
+  background-color: #E8BFFB
+
+}
+.title {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+```
+## Introduction
+My report/survey is based on the learning habits and preferences of programmers (or at the least have attempted to learn to program). The only key focus on my survey was that the participants had experience in programming, and was designed to gather some information to be able to piece together common habits or preferences that programmers have, e.g: do programmers tend to prefer studying at night, or which places would you prefer to study. This information could also be used to then see any correlation between the hours they spend studying and where they prefer studying.
+
+When designing my survey/form I attempted to employ all the guidelines we were given, but the guideline I would like to talk about is Guideline 4 (Use validation rules for responses). Every single question that could have a guideline had one, including my checkbox. I limited my checkboxes to 3 as it ensures participants have to weigh their options thoroughly and can't select too many which would make my data 'messy'. For my numeric short answer questions, I used regex to only allow whole numbers between certain values as form build-in answer validation only allows for whole numbers OR range, not both. This way I was able to ensure my data was consistent.
+
+The issue with some of my data collection was because checkboxes dont yield 'tidy data'. This is because checkboxes will insert the participants answers into a single cell in the spreadsheet, which doesn't follow the rule where only one observation per cell. I tried my best to remove the consequences of this by only allowing a maximum of 3 answers, though regardless still doesn't follow the concept.
+
+**Link to my survey: https://forms.gle/kTwyYRcovpceH6NW7**
+
+## Analytics
+**Link to my csv file: https://docs.google.com/spreadsheets/d/e/2PACX-1vR204WVLpFy7g8NMr3gTlZHcFvIjkBqrC_X3eQd6i3zdvJUh7K74wKAM2Gne6SRl1kJHApphM5D7UaL/pub?gid=1703945528&single=true&output=csv**
+```{r}
+
+
+enjoy_code_mean <- learning_data$enjoy_code %>%
+  mean(na.rm = TRUE) %>%
+  round(1)
+
+weekly_code_mean <- learning_data$weekly_code %>%
+  mean(na.rm = TRUE) %>%
+  round(1)
+weekly_code_max <- learning_data$weekly_code %>%
+  max(na.rm = TRUE) %>%
+  round(1)
+
+experience_mean <- learning_data$experience %>%
+  mean(na.rm = TRUE) %>%
+  round(1)
+experience_max <- learning_data$experience %>%
+  max(na.rm = TRUE) %>%
+  round(1)
+```
+Here is some information I was able to gather from my data:
+
+The **mean** for the value of how much people enjoyed programming was **`r enjoy_code_mean`**.
+
+The **mean** for the amount of participants programmed weekly in hours was **`r weekly_code_mean`**.\
+The **max** for the amount of participants programmed weekly in hours was **`r weekly_code_max`**.
+
+It is important to consider the max when looking at the mean for this as the mean could be skewed if the maximum is too large!
+
+The **mean** for the amount of years of experience the participants had was **`r experience_mean`**.\
+The **max** for the amount of years of experiences the participants had was **`r experience_max`**.
+
+```{r}
+learning_data %>%
+  ggplot() +
+    geom_bar(aes(x = study_time, fill = study_time)) + 
+    labs(title = "Preferred Time of Study of Participating Programmers",
+         x = "Preferred Time") + 
+    theme(axis.text.x = element_blank(), legend.title = element_blank())
+
+learning_data_longer <- learning_data %>%
+  separate_rows(ideal_spaces, sep = ", ")
+learning_data_longer %>%
+  ggplot() + 
+    geom_bar(aes(x = ideal_spaces, fill = ideal_spaces)) +
+    labs(title = "Preferred Space of Study of Participating Programmers", x = "Preferred Space") +
+    theme(axis.text.x = element_blank(), legend.title = element_blank())
+learning_data %>%
+  ggplot() + geom_bar(aes(x = status, fill = status),width=0.9) +
+  labs(title= "Current Status of Participating Programmers", x = "Status") +
+  theme(axis.text.x = element_blank(), legend.title = element_blank())
+```
+
+
+## Learning Reflection
+The most important idea is to only write things that are able to dynamically change as more data is entered. I myself was tempting to write conclusions about the bar graphs until I realised that actually if I wrong this and more data was entered my analysis could change and therefore render it inaccurate. Because of this I find it quite important to keep it in mind when designing a dynamic reporting system, but I think its obviously what makes them interesting as you will then have to make your own conclusions using it, and possibly there may be a way to draw conclusions automatically with advanced enough code.
+
+I believe my project demonstrates creativity in a few ways such as the regex for the short-answer numerical questions in the survey/form. I believe most people would've just used the "number between" or "whole number" options, which you can't use both which means you either sacrifice having a boundary or sacrifice whole numbers, which can cause issues when forming graphs etc (though could be solved with rounding). Another way I believe my project demonstrates creativity is me using the 'theme' functions as I found it to be an issue where my x labels would be too long and interfere with each other making a word-mess. I had to figure out how to remove both this x label and decided to remove the legend title as well to make everything fit nice and cleanly.
+
+I think this was a really cool project as I find dynamic systems very interesting and can be very useful and that this was a good introduction to the concept. I definitely think this is something that is useable in many every-day scenarios as this is just a step above using spreadsheets. 
+
+

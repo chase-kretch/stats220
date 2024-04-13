@@ -1,0 +1,95 @@
+---
+title: "Project 5"
+subtitle: "STATS 220 Semester One 2023"
+author: "Chase Kretschmar"
+date: "2023-05-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, Warning = FALSE)
+library(tidyverse)
+playlist_data <- readRDS("playlist_data.rds")
+
+
+```
+
+```{css, echo=FALSE}
+body{
+  font-family: "Lucida Console", "Courier New", monospace;
+  background-color: #E8BFFB
+
+}
+.title {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+```
+## Introduction
+
+I selected the Japan, USA and Australia just because I thought there would be a variety of music between Japan and the other two while still possibly having some similar music between USA and Australia. I was hoping that I would discover some tendencies which I feel like I have.
+For example I was able to discover Japans songs seem to be the longest and get even longer if they are in albums. I also discovered that songs from the same album in Japan also don't seem to appear in the top 100 together while USA and Australia tend to have multiple songs from the same album in their top 100.
+
+You could write SQL for determining which songs that appear in both playlists by writing:
+
+```sql
+SELECT *
+  FROM tbl_playlist1
+    INNER JOIN tbl_playlist2
+      ON tbl_playlist1.song_name = tbl_playlist2.song_name
+
+```
+## Data creations
+
+
+#### My Static Visualisation
+
+![](song_vis.png)
+
+My visualisation is a box plot graph that is able to display the relationship between countries and their song_length. It also includes whether or not they were in an album or not. From looking at the visualisation you are able to determine that typically songs from albums that are on the top 100 are atleast the same length as singles in the top 100 or higher for all 3 countries. We can also see that for Japan, songs that are in albums have a higher chance of being longer as shown by the higher upper quartile, same with Australia. USA on the other hand, the upper quartile gets larger when the song is from a single. What is a little interesting is that australia has one song that is very very short. 
+The hardest part of this graph was probably getting the legend and the colors to work correctly as when I manually entered the colors the legend wouldn't appear and all sorts of issues arised. After enough playing around I eventually got it to a point that I was happy with.
+
+#### Second Animated visualisation
+
+![](playlistanimgg.gif)
+
+I decided to make another visualisation as I feel as though they provide the most insight with the data and this animated graph is a very good first-glance into the relationship between countries and how long their top 100 songs last. Its fairly clear from this graph that Australia tends to keep their songs on for the longest, with Japan slightly less long and USA not having a single song from over 5000 days ago. I put together some online knowledge to determine how to calculate the days from today variable and used my knowledge on gganimate to produce this graph.
+
+#### Third thing I did
+
+```{r}
+most_popular_albums <- playlist_data %>% ## Creates a summary of the most popular albums (repeated albums) in the dataset
+  select(album_name) %>%
+  group_by(album_name) %>%
+  summarise(n = n()) %>%
+  arrange(desc(n)) %>%
+  slice(1 : 10)
+
+knitr::kable(most_popular_albums, col.names = c("Album Name", "Num of Occurences in Top 100"))
+
+```
+This part of code takes all the album names and then summarises them to show me all of the most common albums throughout all countries. It isn't particularly useful on its own but could be developed to show data such as which countries tend have multiple songs in the album in the top 100 vs ones that usually just have singles or a single song from an album.
+
+
+
+
+
+## Final reflection
+
+The most important idea is scraping. Its quite an interesting topic and can prove useful to furthering your ability to interact with data. I feel being able to gather website data from its html (inspect element) is pretty unique and could be a incredibly useful skill providing you enter the right career. I never have thought about the ability to do that before this project so now I think I'm happy to have it part of my skillset. 
+
+Overall, I found this class to suprisingly be the most useful to my degree (Computer Science) as the things we learnt across all projects I have discovered to be quite useful in the real world, with even internships recommending R use to create projects to apply with. R seems to be like a widely used language and seems to be a very useful skill and happens to be the only one I really see current use amongst internship employers. I am most curious to see what levels that this could take to and I am very interested to see how big you can make a dynamic system which sounds very useful in the real world.
+## Appendix
+```{r file='song_web.R', eval=FALSE, echo=TRUE}
+
+```
+```{r file='album_web.R', eval=FALSE, echo=TRUE}
+
+```
+```{r file='data_creativity.R', eval=FALSE, echo=TRUE}
+
+```
+
+
+

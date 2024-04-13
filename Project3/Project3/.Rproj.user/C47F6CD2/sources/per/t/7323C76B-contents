@@ -1,0 +1,99 @@
+---
+title: "Project 3"
+subtitle: "STATS 220 Semester One 2023"
+author: "Chase Kretschmar"
+date: "2023-04-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(jsonlite)
+
+
+my_playlist <- read.csv("my_playlist.csv")
+```
+```{css, echo=FALSE}
+body{
+  font-family: "Lucida Console", "Courier New", monospace;
+  background-color: #E8BFFB
+
+}
+.title {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+```
+## Introduction
+My playlist was intended to be a lo-fi hip-hop playlist with the intention of relaxation and studying, as this is common music a lot of people use for this thing and I personally like it myself as well. I believe that the tempo and white noise a lot of the songs have allows for the perfect msusic to study to. They also usually lack words and mean you don't lose focus on lyrics.
+
+Lofi is a relatively new genre (or atleast made popualr recently) and older songs can feel outdated and or repetitive from my experience, so when I created my playlist one of the things I did was arrange everything by their date and also formatting the date into something more readable with arrange() and mutate(), then the newest 20 with information thats useful was selected with select() and slice(). It would be a good idea to keep updating this frequently as a user would most likely want to listen to new songs. 
+```{r}
+knitr::kable(my_playlist$song_name, col.names = c("Songs"))
+```
+Nested JSON allows for the ability to 'nest' artists within one song allowing for rectangular tidy data. Many songs have more than one artist and so normally this would show up via commas in a cell using csv, instead using JSON you can nest the artists within the data for the song, keeping your rectangular tidy data.
+
+## Key features of my playlist
+Here is the **means** of long songs (greater than 180 seconds) and short songs (< 180):
+```{r}
+longest_song <- my_playlist$format_seconds %>%
+  max() %>%
+  round(0)
+mean_length <- my_playlist$format_seconds %>%
+  mean() %>%
+  round(0)
+
+my_playlist %>%
+  group_by(long_or_short) %>%
+  summarise(mean_song_length = round(mean(format_seconds),0))
+```
+The **longest** song was **`r longest_song`** seconds.
+Lofi songs are usually fairly short so this makes sense to not be a very big number even as the largest.
+
+The overall **average** length for my playlist was **`r mean_length`** seconds
+
+
+```{r}
+my_playlist %>%
+  ggplot() +
+    geom_bar(aes(x = long_or_short, fill = long_or_short)) +
+    labs(title = "Songs in my playlist that are long vs short", x = "Long or Short")
+```
+
+
+  
+## SQL examples
+**Select function:**
+
+SELECT song_name, artist, album, song_length\
+  FROM tbl_songs;
+
+this is similar my use of the select function, minus a few columns, this in R code would be
+songs %>%
+ select(song_name,artist,album,song_length)
+
+**Filter function:**
+
+SELECT *\
+  FROM tbl_songs\
+  WHERE explicit LIKE '%not%';
+
+this is similar to my function where it filters all the columns that contain a explicit rating of 'notExplicit' to create data with only non explicit songs.
+example in R is 
+
+filter(str_detect(str_to_lower(explicit),"not"))
+ 
+**(sorry the indenting isnt working)**
+
+## Learning reflection
+I key thing I took away from this is that it gets quite a bit more complicated as things go on, as there is a lot to remember regarding inputs and I was struggling to come up with ways to use the functions we learnt such as mutate() and filter(). As something that is quite an important idea for this is that JSONs are able to create tidy data using their ability to nest information, and also the concept of rectangular tidy data.
+Once again, I used some CSS in my index/report to make it a little bit more nicer as I always think its a good touch for creativity and make not every single report to mark look the same. I added some color in the graph which was completely unnecessary but it never hurts. Overall though I think this was a harder project to apply creativity as there is less options when choosing what we do for this project. One example of this is the limitations of the API search function as I couldn't really get a good mixure/diversity of songs without doing something tedious. 
+I think APIs are interesting and I commonly hear about them throughout my time spent interacting elsewhere on the internet so I found it useful to have some minor knowledge about them. As for discussing the answer more literally, (question asks for anything related to data tech), I think for something atleast concerning this course I found project 2s concept more interesting as things that are live-service to me seem to be quite important and useful, and this is what I would like to learn about as I can see it having a strong use in my career.
+## Appendix
+```{r file='exploration.R', eval=FALSE, echo=TRUE}
+
+```
+
